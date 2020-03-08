@@ -16,7 +16,7 @@ func TestPlaintextTemplate(t *testing.T) {
 	tmpl := templates.Plaintext()
 
 	b := &strings.Builder{}
-	err := tmpl.Execute(b, sampleResume)
+	err := tmpl.Execute(b, testResume)
 	g.Expect(err).ToNot(HaveOccurred())
 
 	g.Expect(b.String()).To(Equal(plaintextResume))

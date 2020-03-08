@@ -6,11 +6,11 @@ import (
 	"resume/internal/resume"
 )
 
-var sampleStartTime = time.Date(2004, 01, 1, 0, 0, 0, 0, time.UTC)
+var testStartTime = time.Date(2004, 01, 1, 0, 0, 0, 0, time.UTC)
 
-var sampleEndTime = time.Date(2006, 12, 31, 0, 0, 0, 0, time.UTC)
+var testEndTime = time.Date(2006, 12, 31, 0, 0, 0, 0, time.UTC)
 
-var sampleResume = resume.Resume{
+var testResume = resume.Resume{
 	Header: resume.Header{
 		Name:  "John Smith",
 		Email: "john.smith@gmail.com",
@@ -22,7 +22,7 @@ var sampleResume = resume.Resume{
 			GPA:    "3.9",
 			TimeSpan: resume.TimeSpan{
 				TimeSpanVariant: resume.UnboundedSpan{
-					StartDate: sampleStartTime,
+					StartDate: testStartTime,
 				},
 			},
 		},
@@ -31,8 +31,8 @@ var sampleResume = resume.Resume{
 			Degree: "B.S. in Computer Science",
 			TimeSpan: resume.TimeSpan{
 				TimeSpanVariant: resume.BoundedSpan{
-					StartDate: sampleStartTime,
-					EndDate:   sampleEndTime,
+					StartDate: testStartTime,
+					EndDate:   testEndTime,
 				},
 			},
 		},
@@ -46,7 +46,7 @@ var sampleResume = resume.Resume{
 			Location: "Seattle, WA",
 			TimeSpan: resume.TimeSpan{
 				TimeSpanVariant: resume.UnboundedSpan{
-					StartDate: sampleStartTime,
+					StartDate: testStartTime,
 				},
 			},
 		},
@@ -58,8 +58,8 @@ var sampleResume = resume.Resume{
 			Location: "Seattle, WA",
 			TimeSpan: resume.TimeSpan{
 				TimeSpanVariant: resume.BoundedSpan{
-					StartDate: sampleStartTime,
-					EndDate:   sampleEndTime,
+					StartDate: testStartTime,
+					EndDate:   testEndTime,
 				},
 			},
 		},

@@ -24,7 +24,7 @@ func main() {
 		panic(err)
 	}
 
-	tmpl := templates.Plaintext()
+	tmpl := templates.Latex()
 	b := &strings.Builder{}
 	err = tmpl.Execute(b, r)
 	if err != nil {

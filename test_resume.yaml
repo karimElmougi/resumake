@@ -57,3 +57,8 @@ projects:
       - ANTLR
       - LLVM
     description: Compiles stuff
+  - name: Discord bot
+    skills:
+      - Python
+      - PostgreSQL
+    description: Did robot things

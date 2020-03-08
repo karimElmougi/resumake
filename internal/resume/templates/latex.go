@@ -1,9 +1,27 @@
 package templates
 
-import "text/template"
+import (
+	"strings"
+	"text/template"
+)
 
 func Latex() *template.Template {
-	tmpl, err := template.New("latex").Delims("[[", "]]").Parse(latex)
+	tmpl, err := template.New("base").Delims("[[", "]]").Parse(latexDocument)
+	if err != nil {
+		panic(err)
+	}
+
+	b := &strings.Builder{}
+	err = tmpl.Execute(b, map[string]string{
+		"Definitions":    latexDefinitions,
+		"ResumeTemplate": latexResumeTemplate,
+	})
+	if err != nil {
+		panic(err)
+	}
+
+	fns := template.FuncMap{"escape": latexEscape}
+	tmpl, err = template.New("latex").Funcs(fns).Delims("[[", "]]").Parse(b.String())
 	if err != nil {
 		panic(err)
 	}
@@ -11,7 +29,16 @@ func Latex() *template.Template {
 	return tmpl
 }
 
-var latex = `
+func latexEscape(s string) string {
+	s = strings.ReplaceAll(s, "&", "\\&")
+	s = strings.ReplaceAll(s, "%", "\\%")
+	s = strings.ReplaceAll(s, "$", "\\$")
+	s = strings.ReplaceAll(s, "#", "\\#")
+	s = strings.ReplaceAll(s, "_", "\\_")
+	return s
+}
+
+var latexDocument = `
 \documentclass[letterpaper]{article}
     \usepackage{fullpage}
     \usepackage{amsmath}
@@ -26,7 +53,78 @@ var latex = `
     \raggedright
 
 %%%%%%%%%%%%%%%%%%%%%%% DEFINITIONS FOR RESUME %%%%%%%%%%%%%%%%%%%%%%%
+[[ .Definitions ]]
+%%%%%%%%%%%%%%%%%%%%%%% END RESUME DEFINITIONS %%%%%%%%%%%%%%%%%%%%%%%
 
+\begin{document}
+\vspace*{-40pt}
+
+
+[[ .ResumeTemplate ]]
+\end{document}
+`
+
+var latexResumeTemplate = `
+%==== Profile ====%
+\vspace*{-10pt}
+\begin{center}
+	{\Huge \scshape {[[ .Header.Name ]]}}\\
+	[[ .Header.Email ]]\\
+\end{center}
+
+
+
+
+%==== Education ====%
+\header{Education}
+[[- range $eduEntry := .EducationEntries ]]
+\simpleeduentry{[[ $eduEntry.School ]]}{}{[[ $eduEntry.Degree ]]}{[[ $eduEntry.TimeSpan.Display ]]}
+[[- end ]]
+
+
+
+
+%==== Experience ====%
+\header{Experience}
+\vspace{1mm}
+
+[[- range $jobEntry := .JobEntries ]]
+\workentry
+    {[[ $jobEntry.Employer ]]}
+    {[[ $jobEntry.Title ]]}
+    {[[ $jobEntry.Location ]]}
+	{[[ $jobEntry.Skills.Display | escape ]]}
+    {[[ $jobEntry.TimeSpan.Display ]]}
+\begin{itemize}[leftmargin=\bulletmargin] \itemsep \bulletvsep
+[[- range $bullet := $jobEntry.Bullets ]]
+	\item [[ $bullet ]] 
+[[- end ]]
+\end{itemize}
+[[ end ]]
+
+
+
+%==== Skills ====%
+\header{Skills}
+\begin{tabular}{ l l }
+	Languages:    & [[ .Languages.Display | escape ]] \\
+	Technologies: & [[ .Technologies.Display | escape ]] \\
+\end{tabular}
+\vspace{2mm}
+
+
+
+
+%==== Projects ====%
+\header{Projects}
+[[- range $project := .Projects ]]
+{\textbf{[[ $project.Name | escape ]]}} {\sl [[ $project.Skills.Display | escape ]]} \\
+[[ $project.Description ]] \\
+\vspace*{2mm}
+[[ end ]]
+`
+
+var latexDefinitions = `
 \newcommand{\area} [2] {
     \vspace*{-9pt}
     \begin{verse}
@@ -73,85 +171,4 @@ var latex = `
 \newcommand{\bulletmargin}{10pt}
 \newcommand{\bulletvsep}{-1pt}
 \newcommand{\datesep}{ - }
-
-%%%%%%%%%%%%%%%%%%%%%%% END RESUME DEFINITIONS %%%%%%%%%%%%%%%%%%%%%%%
-
-\begin{document}
-\vspace*{-40pt}
-
-    
-
-%==== Profile ====%
-\vspace*{-10pt}
-\begin{center}
-	{\Huge \scshape {[[ .Header.Name ]]}}\\
-	[[ .Header.Email ]]\\
-\end{center}
-
-
-
-
-%==== Education ====%
-\header{Education}
-[[- range $eduEntry := .EducationEntries ]]
-\simpleeduentry{[[ $eduEntry.School ]]}{}{[[ $eduEntry.Degree ]]}{[[ $eduEntry.TimeSpan.Display ]]}
-[[- end ]]
-
-
-
-
-%==== Experience ====%
-\header{Experience}
-\vspace{1mm}
-
-[[- range $jobEntry := .JobEntries ]]
-\workentry
-    {[[ $jobEntry.Employer ]]}
-    {[[ $jobEntry.Title ]]}
-    {[[ $jobEntry.Location ]]}
-	{\verb|[[ $jobEntry.Skills.Display ]]|}
-    {[[ $jobEntry.TimeSpan.Display ]]}
-\begin{itemize}[leftmargin=\bulletmargin] \itemsep \bulletvsep
-[[- range $bullet := $jobEntry.Bullets ]]
-	\item [[ $bullet ]] 
-[[- end ]]
-\end{itemize}
-[[ end ]]
-
-
-%==== Skills ====%
-\header{Skills}
-%C\#, C++, Rust, Go, Erlang, Python, SQL
-\begin{tabular}{ l l }
-	Languages:    & C\#, C++, Rust, Go, Erlang, Python, PostgreSQL \\
-	Technologies: & Git, Docker, Kubernetes, Helm, Linux           \\
-\end{tabular}
-\vspace{2mm}
-
-
-
-
-%==== Projects ====%
-\header{Projects}
-{\textbf{Compiler}} {\sl C\#, ANTLR, LLVM} \\
-Created the compiler used to teach the Compilers class at the University of Sherbrooke
-\vspace*{2mm}
-
-{\textbf{Gameboy emulator}} {\sl Go} \\
-Implemented the CPU instruction set along with emulation of most of the original Gameboy\textquotesingle{}s hardware\\
-\vspace*{2mm}
-
-{\textbf{rebar3\_todo}} {\sl Erlang} \\
-Contributed to the plugin by making it recursively search through directories for TODO tags in files\\
-\vspace*{2mm}
-
-%{\textbf{Gravity Simulator}} {\sl Rust} \\
-%Designed a two-dimensional sandbox for modeling the gravitational interactions of a star system %of celestial objects\\
-%\vspace*{2mm}
-
-%{\textbf{Discord bot}} {\sl Python} \\
-%Developed a bot to handle resume reviewing for the CS Career Hackers non-profit
-%\vspace*{2mm}
-
-\end{document}
 `
