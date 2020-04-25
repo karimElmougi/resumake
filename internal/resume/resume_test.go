@@ -4,7 +4,7 @@ import (
 	"testing"
 	"time"
 
-	"resume/internal/resume"
+	"resumake/internal/resume"
 
 	. "github.com/onsi/gomega"
 	"gopkg.in/yaml.v2"

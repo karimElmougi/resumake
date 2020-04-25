@@ -6,7 +6,7 @@ import (
 
 	. "github.com/onsi/gomega"
 
-	"resume/internal/resume/templates"
+	"resumake/internal/resume/templates"
 )
 
 func TestWholeLatexTemplate(t *testing.T) {
