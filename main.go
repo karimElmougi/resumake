@@ -26,6 +26,26 @@ func main() {
 				ArgsUsage: "resume.yaml",
 				Action:    makeTextResume,
 			},
+			&cli.Command{
+				Name:      "latex",
+				Usage:     "Generates a .tex file to compile into a resume using a Latex distribution",
+				ArgsUsage: "resume.yaml",
+				Action:    makeLatexResume,
+			},
+			&cli.Command{
+				Name:      "custom",
+				Usage:     "Renders a custom template",
+				ArgsUsage: "templateFile resume.yaml",
+				Flags: []cli.Flag{
+					&cli.StringFlag{
+						Name:    "delimiters",
+						Aliases: []string{"d", "delim"},
+						Value:   "{{}}",
+						Usage:   "go template delimiters",
+					},
+				},
+				Action: makeCustomResume,
+			},
 		},
 	}
 
@@ -33,28 +53,57 @@ func main() {
 	if err != nil {
 		fmt.Println(err)
 	}
+}
 
-	fmt.Println(app)
-	buf, err := ioutil.ReadFile("test_resume.yaml")
-	if err != nil {
-		panic(err)
+func makeCustomResume(c *cli.Context) error {
+	if c.NArg() < 2 {
+		cli.ShowCommandHelpAndExit(c, "custom", 1)
 	}
 
-	r := resume.Resume{}
-	err = yaml.Unmarshal(buf, &r)
+	templateFile := c.Args().First()
+	content, err := ioutil.ReadFile(templateFile)
 	if err != nil {
-		panic(err)
+		return err
 	}
 
-	tmpl := templates.Latex()
-	b := &strings.Builder{}
-	err = tmpl.Execute(b, r)
-	if err != nil {
-		panic(err)
+	delims := c.String("delimiters")
+	if len(delims)%2 != 0 {
+		println("Delimiters must have an even number of characters")
+		os.Exit(1)
 	}
 
-	s := b.String()
+	mid := len(delims) / 2
+	openDelim := delims[:mid]
+	closeDelim := delims[mid:]
+
+	tmpl, err := template.New("template").Delims(openDelim, closeDelim).Parse(string(content))
+	if err != nil {
+		return err
+	}
+
+	s, err := makeResume(c.Args().Get(1), tmpl)
+	if err != nil {
+		return err
+	}
+
 	fmt.Println(s)
+
+	return nil
+}
+
+func makeLatexResume(c *cli.Context) error {
+	if c.NArg() < 1 {
+		cli.ShowCommandHelpAndExit(c, "latex", 1)
+	}
+
+	s, err := makeResume(c.Args().First(), templates.Latex())
+	if err != nil {
+		return err
+	}
+
+	fmt.Println(s)
+
+	return nil
 }
 
 func makeTextResume(c *cli.Context) error {

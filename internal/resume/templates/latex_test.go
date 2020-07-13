@@ -38,13 +38,6 @@ var latexResume = `
 
 %%%%%%%%%%%%%%%%%%%%%%% DEFINITIONS FOR RESUME %%%%%%%%%%%%%%%%%%%%%%%
 
-\newcommand{\area} [2] {
-    \vspace*{-9pt}
-    \begin{verse}
-        \textbf{#1}   #2
-    \end{verse}
-}
-
 \newcommand{\lineunder} {
     \vspace*{-8pt} \\
     \hspace*{-18pt} \hrulefill \\
@@ -54,36 +47,6 @@ var latexResume = `
     {\hspace*{-18pt}\vspace*{6pt} \textsc{#1}}
     \vspace*{-6pt} \lineunder
 }
-
-%\eduentry{School name}{Location}{Degree}{GPA value}{Dates}
-\newcommand*{\eduentry}[5]{
-    \textbf{#1}\hfill#2\\#3 \textit{GPA: #4}\hfill#5\\
-    \vspace{2mm}
-}
-
-%\simpleeduentry{School name}{Location}{Degree}{GPA value}{Dates}
-\newcommand*{\simpleeduentry}[4]{
-    \textbf{#1}\hfill#2\\#3 \hfill#4\\
-    \vspace{2mm}
-}
-
-%\workentry{Company}{Location}{Title}{Dates}
-%\newcommand*{\workentry}[4]{
-%    \textbf{#1}\hfill#2\\\textit{#3}\hfill#4\\\vspace{-1mm}
-%}
-
-\newcommand*{\workentry}[5]{
-    \textbf{#1 \textbar{} #2}\hfill#3\\\vspace{0.75mm}\textit{#4}\hfill#5\\\vspace{-2.5mm}
-}
-
-%\daterange{Start Date}{End Date}
-\newcommand*{\daterange}[2]{
-    #1\datesep #2
-}
-
-\newcommand{\bulletmargin}{10pt}
-\newcommand{\bulletvsep}{-1pt}
-\newcommand{\datesep}{ - }
 
 %%%%%%%%%%%%%%%%%%%%%%% END RESUME DEFINITIONS %%%%%%%%%%%%%%%%%%%%%%%
 
@@ -95,8 +58,8 @@ var latexResume = `
 %==== Profile ====%
 \vspace*{-10pt}
 \begin{center}
-	{\Huge \scshape {John Smith}}\\
-	john.smith@gmail.com\\
+    {\Huge \scshape {John Smith}}\\
+    john.smith@gmail.com\\
 \end{center}
 
 
@@ -104,8 +67,19 @@ var latexResume = `
 
 %==== Education ====%
 \header{Education}
-\simpleeduentry{Georgia Institute of Technology}{}{M.S. in Computer Science}{Jan. 2004 - Current}
-\simpleeduentry{University of Philadelphia}{}{B.S. in Computer Science}{Jan. 2004 - Dec. 2006}
+
+\textbf{Georgia Institute of Technology}
+\hfill\\
+M.S. in Computer Science \textit{GPA: 3.9}
+\hfill Jan. 2004 - Current\\
+\vspace{2mm}
+
+\textbf{University of Philadelphia}
+\hfill\\
+B.S. in Computer Science
+\hfill Jan. 2004 - Dec. 2006\\
+\vspace{2mm}
+
 
 
 
@@ -113,37 +87,38 @@ var latexResume = `
 %==== Experience ====%
 \header{Experience}
 \vspace{1mm}
-\workentry
-    {Microsoft}
-    {Senior Software Engineer}
-    {Seattle, WA}
-	{C\#, C++}
-    {Jan. 2004 - Current}
-\begin{itemize}[leftmargin=\bulletmargin] \itemsep \bulletvsep
-	\item did a thing
-	\item did another thing
+
+\textbf{Microsoft \textbar{} Senior Software Engineer}
+\hfill Seattle, WA\\
+\vspace{0.75mm}
+\textit{C\#, C++}
+\hfill Jan. 2004 - Current\\
+\vspace{-2.5mm}
+\begin{itemize}[leftmargin=10pt] \itemsep -1pt
+    \item did a thing
+    \item did another thing
 \end{itemize}
 
-\workentry
-    {IBM}
-    {Software Engineer}
-    {Seattle, WA}
-	{Java}
-    {Jan. 2004 - Dec. 2006}
-\begin{itemize}[leftmargin=\bulletmargin] \itemsep \bulletvsep
-	\item did a thing
-	\item did another thing
+\textbf{IBM \textbar{} Software Engineer}
+\hfill Seattle, WA\\
+\vspace{0.75mm}
+\textit{Java}
+\hfill Jan. 2004 - Dec. 2006\\
+\vspace{-2.5mm}
+\begin{itemize}[leftmargin=10pt] \itemsep -1pt
+    \item did a thing
+    \item did another thing
 \end{itemize}
 
-\workentry
-    {SAP}
-    {Software Engineer Intern}
-    {Seattle, WA}
-	{ABAP}
-    {Winter 2004}
-\begin{itemize}[leftmargin=\bulletmargin] \itemsep \bulletvsep
-	\item did a thing
-	\item did another thing
+\textbf{SAP \textbar{} Software Engineer Intern}
+\hfill Seattle, WA\\
+\vspace{0.75mm}
+\textit{ABAP}
+\hfill Winter 2004\\
+\vspace{-2.5mm}
+\begin{itemize}[leftmargin=10pt] \itemsep -1pt
+    \item did a thing
+    \item did another thing
 \end{itemize}
 
 
@@ -152,8 +127,8 @@ var latexResume = `
 %==== Skills ====%
 \header{Skills}
 \begin{tabular}{ l l }
-	Languages:    & C++, Java, C\# \\
-	Technologies: & git, Docker \\
+    Languages:    & C++, Java, C\# \\
+    Technologies: & git, Docker \\
 \end{tabular}
 \vspace{2mm}
 

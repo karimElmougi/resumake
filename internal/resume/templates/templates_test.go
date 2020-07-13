@@ -3,7 +3,7 @@ package templates_test
 import (
 	"time"
 
-	"resume/internal/resume"
+	"resumake/internal/resume"
 )
 
 var testStartTime = time.Date(2004, 01, 1, 0, 0, 0, 0, time.UTC)

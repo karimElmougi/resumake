@@ -6,7 +6,7 @@ import (
 
 	. "github.com/onsi/gomega"
 
-	"resume/internal/resume/templates"
+	"resumake/internal/resume/templates"
 )
 
 func TestPlaintextTemplate(t *testing.T) {
@@ -35,17 +35,20 @@ B.S. in Computer Science, University of Philadelphia, Jan. 2004 - Dec. 2006
 
 PROFESSIONAL EXPERIENCE
 ===============================
-Senior Software Engineer, Microsoft, Seattle, WA, Jan. 2004 - Current
+Senior Software Engineer
+Microsoft, Seattle, WA, Jan. 2004 - Current
 * did a thing
 * did another thing
 Technologies used: C#, C++
 
-Software Engineer, IBM, Seattle, WA, Jan. 2004 - Dec. 2006
+Software Engineer
+IBM, Seattle, WA, Jan. 2004 - Dec. 2006
 * did a thing
 * did another thing
 Technologies used: Java
 
-Software Engineer Intern, SAP, Seattle, WA, Winter 2004
+Software Engineer Intern
+SAP, Seattle, WA, Winter 2004
 * did a thing
 * did another thing
 Technologies used: ABAP

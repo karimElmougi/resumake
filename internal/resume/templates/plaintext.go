@@ -2,6 +2,7 @@ package templates
 
 import "text/template"
 
+// Plaintext returns the go template of the plaintext resume template
 func Plaintext() *template.Template {
 	tmpl, err := template.New("plaintext").Parse(plaintext)
 	if err != nil {
@@ -25,11 +26,12 @@ EDUCATION
 PROFESSIONAL EXPERIENCE
 ===============================
 {{- range $jobEntry := .JobEntries }}
-{{ $jobEntry.Title }}, {{ $jobEntry.Employer }}, {{ $jobEntry.Location }}, {{ $jobEntry.TimeSpan.Display }} 
+{{ $jobEntry.Title }}
+{{ $jobEntry.Employer }}, {{ $jobEntry.Location }}, {{ $jobEntry.TimeSpan.Display }} 
 {{- range $bullet := $jobEntry.Bullets }}
 * {{ $bullet }} 
 {{- end }}
-Technologies used: {{ $jobEntry.Skills.Display }}{{ "\n" }}
+{{ if $jobEntry.Skills }}Technologies used: {{ $jobEntry.Skills.Display }}{{ "\n" }}{{ end }}
 {{- end }}
 SKILLS
 ==============================
