@@ -44,7 +44,7 @@ var latexResume = `
 }
 
 \newcommand{\header} [1] {
-    {\hspace*{-18pt}\vspace*{6pt} \textsc{#1}}
+    {\hspace*{-18pt}\vspace*{6pt} {#1}}
     \vspace*{-6pt} \lineunder
 }
 
@@ -53,12 +53,12 @@ var latexResume = `
 \begin{document}
 \vspace*{-40pt}
 
-
+\sffamily
 
 %==== Profile ====%
 \vspace*{-10pt}
 \begin{center}
-    {\Huge \scshape {John Smith}}\\
+    {\Huge JOHN SMITH}\\
     john.smith@gmail.com\\
 \end{center}
 
@@ -137,14 +137,13 @@ B.S. in Computer Science
 
 %==== Projects ====%
 \header{Projects}
-{\textbf{Compiler}} {\sl C\#, ANTLR, LLVM} \\
+{\textbf{Compiler}} \textit{C\#, ANTLR, LLVM} \\
 Compiles stuff \\
 \vspace*{2mm}
 
-{\textbf{Gameboy Emulator}} {\sl C++} \\
+{\textbf{Gameboy Emulator}} \textit{C++} \\
 Emulates stuff \\
 \vspace*{2mm}
-
 
 \end{document}
 `

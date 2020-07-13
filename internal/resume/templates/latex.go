@@ -7,22 +7,8 @@ import (
 
 // Latex returns the go template for the Latex resume template
 func Latex() *template.Template {
-	tmpl, err := template.New("base").Delims("[[", "]]").Parse(latexDocument)
-	if err != nil {
-		panic(err)
-	}
-
-	b := &strings.Builder{}
-	err = tmpl.Execute(b, map[string]string{
-		"Definitions":    latexDefinitions,
-		"ResumeTemplate": latexResumeTemplate,
-	})
-	if err != nil {
-		panic(err)
-	}
-
-	fns := template.FuncMap{"escape": latexEscape}
-	tmpl, err = template.New("latex").Funcs(fns).Delims("[[", "]]").Parse(b.String())
+	fns := template.FuncMap{"escape": latexEscape, "toUpper": strings.ToUpper}
+	tmpl, err := template.New("latex").Funcs(fns).Delims("[[", "]]").Parse(latexDocument)
 	if err != nil {
 		panic(err)
 	}
@@ -54,22 +40,28 @@ var latexDocument = `
     \raggedright
 
 %%%%%%%%%%%%%%%%%%%%%%% DEFINITIONS FOR RESUME %%%%%%%%%%%%%%%%%%%%%%%
-[[ .Definitions ]]
+
+\newcommand{\lineunder} {
+    \vspace*{-8pt} \\
+    \hspace*{-18pt} \hrulefill \\
+}
+
+\newcommand{\header} [1] {
+    {\hspace*{-18pt}\vspace*{6pt} {#1}}
+    \vspace*{-6pt} \lineunder
+}
+
 %%%%%%%%%%%%%%%%%%%%%%% END RESUME DEFINITIONS %%%%%%%%%%%%%%%%%%%%%%%
 
 \begin{document}
 \vspace*{-40pt}
 
+\sffamily
 
-[[ .ResumeTemplate ]]
-\end{document}
-`
-
-var latexResumeTemplate = `
 %==== Profile ====%
 \vspace*{-10pt}
 \begin{center}
-    {\Huge \scshape {[[ .Header.Name ]]}}\\
+    {\Huge [[ .Header.Name | toUpper ]]}\\
     [[ .Header.Email ]]\\
 \end{center}
 
@@ -122,20 +114,9 @@ var latexResumeTemplate = `
 %==== Projects ====%
 \header{Projects}
 [[- range $project := .Projects ]]
-{\textbf{[[ $project.Name | escape ]]}} {\sl [[ $project.Skills.Display | escape ]]} \\
+{\textbf{[[ $project.Name | escape ]]}} \textit{[[ $project.Skills.Display | escape ]]} \\
 [[ $project.Description ]] \\
 \vspace*{2mm}
 [[ end ]]
-`
-
-var latexDefinitions = `
-\newcommand{\lineunder} {
-    \vspace*{-8pt} \\
-    \hspace*{-18pt} \hrulefill \\
-}
-
-\newcommand{\header} [1] {
-    {\hspace*{-18pt}\vspace*{6pt} \textsc{#1}}
-    \vspace*{-6pt} \lineunder
-}
+\end{document}
 `
