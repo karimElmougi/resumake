@@ -16,6 +16,19 @@ education:
       end: 12/2023
       
 experience:
+  - title: Software Developer
+    employer: Element AI
+    location: Montreal
+    timespan: 
+      start: 08/2020
+    skills:
+      - Go
+      - TypeScript
+      - React
+    bullets:
+      - did a thing
+      - did another thing
+
   - title: Software Developer, Intern
     employer: Element AI
     location: Montreal
@@ -29,6 +42,7 @@ experience:
     bullets:
       - did a thing
       - did another thing
+
   - title: Software Developer, Intern
     employer: Genetec
     location: Montreal
