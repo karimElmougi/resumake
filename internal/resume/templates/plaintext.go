@@ -26,8 +26,8 @@ EDUCATION
 PROFESSIONAL EXPERIENCE
 ===============================
 {{- range $jobEntry := .JobEntries }}
+{{ $jobEntry.Employer }}, {{ $jobEntry.Location }}, {{ $jobEntry.TimeSpan.Display }}
 {{ $jobEntry.Title }}
-{{ $jobEntry.Employer }}, {{ $jobEntry.Location }}, {{ $jobEntry.TimeSpan.Display }} 
 {{- range $bullet := $jobEntry.Bullets }}
 * {{ $bullet }} 
 {{- end }}
