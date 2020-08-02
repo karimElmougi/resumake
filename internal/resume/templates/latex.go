@@ -27,7 +27,7 @@ func latexEscape(s string) string {
 }
 
 func latexCensor(s string) string {
-  re := regexp.MustCompile(`\|\|(.*)\|\|`)
+  re := regexp.MustCompile(`\|\|(.*?)\|\|`)
 	s = re.ReplaceAllString(s, "\\censor{$1}")
 	return s
 }
