@@ -1,13 +1,14 @@
 package templates
 
 import (
+	"regexp"
 	"strings"
 	"text/template"
 )
 
 // Latex returns the go template for the Latex resume template
 func Latex() *template.Template {
-	fns := template.FuncMap{"escape": latexEscape, "toUpper": strings.ToUpper}
+	fns := template.FuncMap{"escape": latexEscape, "toUpper": strings.ToUpper, "censor": latexCensor}
 	tmpl, err := template.New("latex").Funcs(fns).Delims("[[", "]]").Parse(latexDocument)
 	if err != nil {
 		panic(err)
@@ -16,13 +17,19 @@ func Latex() *template.Template {
 	return tmpl
 }
 
-func latexEscape(s string) string {
-	s = strings.ReplaceAll(s, "&", "\\&")
-	s = strings.ReplaceAll(s, "%", "\\%")
-	s = strings.ReplaceAll(s, "$", "\\$")
-	s = strings.ReplaceAll(s, "#", "\\#")
-	s = strings.ReplaceAll(s, "_", "\\_")
-	return s
+func latexEscape(text string) string {
+	text = strings.ReplaceAll(text, "&", "\\&")
+	text = strings.ReplaceAll(text, "%", "\\%")
+	text = strings.ReplaceAll(text, "$", "\\$")
+	text = strings.ReplaceAll(text, "#", "\\#")
+	text = strings.ReplaceAll(text, "_", "\\_")
+	return text
+}
+
+func latexCensor(text string) string {
+	re := regexp.MustCompile(`\|\|(.*?)\|\|`)
+	text = re.ReplaceAllString(text, "\\censor{$1}")
+	return text
 }
 
 var latexDocument = `
@@ -38,6 +45,7 @@ var latexDocument = `
     \textheight=10in
     \pagestyle{empty}
     \raggedright
+    \usepackage{censor}
 
 %%%%%%%%%%%%%%%%%%%%%%% DEFINITIONS FOR RESUME %%%%%%%%%%%%%%%%%%%%%%%
 
@@ -57,12 +65,13 @@ var latexDocument = `
 \vspace*{-40pt}
 
 \sffamily
+[[ if not .CensoringEnabled ]]\StopCensoring[[ end ]]
 
 %==== Profile ====%
 \vspace*{-10pt}
 \begin{center}
-    {\Huge [[ .Header.Name | toUpper ]]}\\
-    [[ .Header.Email ]]\\
+    {\Huge [[ .Header.Name | toUpper | censor ]]}\\
+    [[ .Header.Email | censor]]\\
 \end{center}
 
 
@@ -71,10 +80,10 @@ var latexDocument = `
 %==== Education ====%
 \header{Education}
 [[ range $eduEntry := .EducationEntries ]]
-\textbf{[[ $eduEntry.School ]]}
+\textbf{[[ $eduEntry.School | escape | censor]]}
 \hfill\\
-[[ $eduEntry.Degree ]][[- if $eduEntry.GPA ]] \textit{GPA: [[ $eduEntry.GPA ]]}[[ end ]]
-\hfill [[ $eduEntry.TimeSpan.Display ]]\\
+[[ $eduEntry.Degree | censor]][[- if $eduEntry.GPA ]] \textit{GPA: [[ $eduEntry.GPA | censor]]}[[ end ]]
+\hfill [[ $eduEntry.TimeSpan.Display | censor]]\\
 \vspace{2mm}
 [[ end ]]
 
@@ -85,15 +94,15 @@ var latexDocument = `
 \header{Experience}
 \vspace{1mm}
 [[ range $jobEntry := .JobEntries ]]
-\textbf{[[ $jobEntry.Employer ]] \textbar{} [[ $jobEntry.Title ]]}
-\hfill [[ $jobEntry.Location ]]\\
+\textbf{[[ $jobEntry.Employer | escape | censor]] \textbar{} [[ $jobEntry.Title | censor]]}
+\hfill [[ $jobEntry.Location | censor]]\\
 \vspace{0.75mm}
-[[ if $jobEntry.Skills ]]\textit{[[ $jobEntry.Skills.Display | escape ]]}[[ "\n" ]][[ end -]]
-\hfill [[ $jobEntry.TimeSpan.Display]]\\
+[[ if $jobEntry.Skills ]]\textit{[[ $jobEntry.Skills.Display | escape | censor]]}[[ "\n" ]][[ end -]]
+\hfill [[ $jobEntry.TimeSpan.Display | censor]]\\
 [[ if $jobEntry.Skills ]]\vspace{-2.5mm}[[ else ]]\vspace{-7mm}[[ end ]]
 \begin{itemize}[leftmargin=10pt] \itemsep -1pt
 [[- range $bullet := $jobEntry.Bullets ]]
-    \item [[ $bullet | escape ]] 
+    \item [[ $bullet | escape | censor]] 
 [[- end ]]
 \end{itemize}
 [[ end ]]
@@ -102,9 +111,10 @@ var latexDocument = `
 
 %==== Skills ====%
 \header{Skills}
+\vspace{1mm}
 \begin{tabular}{ l l }
-    Languages:    & [[ .Languages.Display | escape ]] \\
-    Technologies: & [[ .Technologies.Display | escape ]] \\
+    Languages:    & [[ .Languages.Display | escape | censor]] \\
+    Technologies: & [[ .Technologies.Display | escape | censor]] \\
 \end{tabular}
 \vspace{2mm}
 
@@ -113,9 +123,10 @@ var latexDocument = `
 
 %==== Projects ====%
 \header{Projects}
+\vspace{1mm}
 [[- range $project := .Projects ]]
-{\textbf{[[ $project.Name | escape ]]}} \textit{[[ $project.Skills.Display | escape ]]} \\
-[[ $project.Description ]] \\
+{\textbf{[[ $project.Name | escape | censor]]}} \textit{[[ $project.Skills.Display | escape | censor]]} \\
+[[ $project.Description | censor]] \\
 \vspace*{2mm}
 [[ end ]]
 \end{document}

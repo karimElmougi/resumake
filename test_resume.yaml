@@ -1,6 +1,8 @@
+censoringEnabled: False
+
 header:
-  name: Karim Elmougi
-  email: karim.elmougi@gmail.com
+  name: '||Karim Elmougi||'
+  email: '||karim.elmougi||@gmail.com'
   
 education:
   - school: University of Sherbrooke

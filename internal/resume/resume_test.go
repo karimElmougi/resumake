@@ -21,6 +21,7 @@ func TestResumeDeserialization(t *testing.T) {
 
 	expectedTime := time.Date(2004, 01, 1, 0, 0, 0, 0, time.UTC)
 	expected := resume.Resume{
+		CensoringEnabled: false,
 		Header: resume.Header{
 			Name:  "John Smith",
 			Email: "john.smith@gmail.com",
@@ -59,6 +60,7 @@ func TestResumeDeserialization(t *testing.T) {
 		},
 	}
 
+	g.Expect(r.CensoringEnabled).To(Equal(expected.CensoringEnabled))
 	g.Expect(r.Header).To(Equal(expected.Header))
 	g.Expect(r.EducationEntries).To(Equal(expected.EducationEntries))
 	g.Expect(r.JobEntries).To(Equal(expected.JobEntries))
