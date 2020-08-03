@@ -1,10 +1,15 @@
 package templates
 
-import "text/template"
+import (
+  "text/template"
+  "strings"
+	"regexp"
+)
 
 // Plaintext returns the go template of the plaintext resume template
 func Plaintext() *template.Template {
-	tmpl, err := template.New("plaintext").Parse(plaintext)
+  fns := template.FuncMap{"censor": plaintextCensor}
+	tmpl, err := template.New("plaintext").Funcs(fns).Parse(plaintext)
 	if err != nil {
 		panic(err)
 	}
@@ -12,36 +17,43 @@ func Plaintext() *template.Template {
 	return tmpl
 }
 
+func plaintextCensor(s string) string {
+  re := regexp.MustCompile(`\|\|.*?\|\|`)
+  //func test(_s string) { return strings.Repeat("#",len(_s)-4) })
+	s = re.ReplaceAllStringFunc(s, func(_s string) string { return strings.Repeat("#",len(_s)-4) })
+	return s
+}
+
 var plaintext = `
-{{- .Header.Name }}
-{{ .Header.Email }}
+{{- .Header.Name | censor }}
 ==============================
+{{ .Header.Email | censor }}
 
 EDUCATION
 ==============================
 {{- range $eduEntry := .EducationEntries }}
-{{ $eduEntry.Degree }}, {{ $eduEntry.School }}, {{ $eduEntry.TimeSpan.Display }}
-{{ if $eduEntry.GPA }}GPA: {{ $eduEntry.GPA }}{{ "\n" }}{{ end }}
+{{ $eduEntry.Degree | censor }}, {{ $eduEntry.School | censor }}, {{ $eduEntry.TimeSpan.Display | censor }}
+{{ if $eduEntry.GPA }}GPA: {{ $eduEntry.GPA | censor }}{{ "\n" }}{{ end }}
 {{- end }}
 PROFESSIONAL EXPERIENCE
 ===============================
 {{- range $jobEntry := .JobEntries }}
-{{ $jobEntry.Employer }}, {{ $jobEntry.Location }}, {{ $jobEntry.TimeSpan.Display }}
-{{ $jobEntry.Title }}
+{{ $jobEntry.Employer | censor }}, {{ $jobEntry.Location | censor }}, {{ $jobEntry.TimeSpan.Display | censor }}
+{{ $jobEntry.Title | censor }}
 {{- range $bullet := $jobEntry.Bullets }}
-* {{ $bullet }} 
+* {{ $bullet | censor }} 
 {{- end }}
-{{ if $jobEntry.Skills }}Technologies used: {{ $jobEntry.Skills.Display }}{{ "\n" }}{{ end }}
+{{ if $jobEntry.Skills }}Technologies used: {{ $jobEntry.Skills.Display | censor }}{{ "\n" }}{{ end }}
 {{- end }}
 SKILLS
 ==============================
-Languages: {{ .Languages.Display }}
-Technologies: {{ .Technologies.Display }}
+Languages: {{ .Languages.Display | censor }}
+Technologies: {{ .Technologies.Display | censor }}
 
 PROJECTS
 ==============================
 {{- range $project := .Projects }}
-{{ $project.Name }}
-{{ $project.Description }}
-Technologies used: {{ $project.Skills.Display }}{{ "\n" }}
+{{ $project.Name | censor }}
+{{ $project.Description | censor }}
+Technologies used: {{ $project.Skills.Display | censor }}{{ "\n" }}
 {{- end }}`

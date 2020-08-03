@@ -1,8 +1,8 @@
 package templates
 
 import (
-	"strings"
 	"text/template"
+	"strings"
 	"regexp"
 )
 
@@ -65,6 +65,7 @@ var latexDocument = `
 \vspace*{-40pt}
 
 \sffamily
+[[ if not .CensoringEnabled ]]\StopCensoring[[end -]]
 
 %==== Profile ====%
 \vspace*{-10pt}
