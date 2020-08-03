@@ -128,6 +128,7 @@ B.S. in Computer Science
 
 %==== Skills ====%
 \header{Skills}
+\vspace{1mm}
 \begin{tabular}{ l l }
     Languages:    & C++, Java, C\# \\
     Technologies: & git, Docker \\
@@ -139,6 +140,7 @@ B.S. in Computer Science
 
 %==== Projects ====%
 \header{Projects}
+\vspace{1mm}
 {\textbf{Compiler}} \textit{C\#, ANTLR, LLVM} \\
 Compiles stuff \\
 \vspace*{2mm}

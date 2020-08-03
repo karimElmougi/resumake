@@ -123,6 +123,7 @@ var latexDocument = `
 
 %==== Projects ====%
 \header{Projects}
+\vspace{1mm}
 [[- range $project := .Projects ]]
 {\textbf{[[ $project.Name | escape | censor]]}} \textit{[[ $project.Skills.Display | escape | censor]]} \\
 [[ $project.Description | censor]] \\
