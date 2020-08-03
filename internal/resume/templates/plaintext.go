@@ -1,14 +1,14 @@
 package templates
 
 import (
-  "text/template"
-  "strings"
 	"regexp"
+	"strings"
+	"text/template"
 )
 
 // Plaintext returns the go template of the plaintext resume template
 func Plaintext() *template.Template {
-  fns := template.FuncMap{"censor": plaintextCensor}
+	fns := template.FuncMap{"censor": plaintextCensor}
 	tmpl, err := template.New("plaintext").Funcs(fns).Parse(plaintext)
 	if err != nil {
 		panic(err)
@@ -18,9 +18,8 @@ func Plaintext() *template.Template {
 }
 
 func plaintextCensor(s string) string {
-  re := regexp.MustCompile(`\|\|.*?\|\|`)
-  //func test(_s string) { return strings.Repeat("#",len(_s)-4) })
-	s = re.ReplaceAllStringFunc(s, func(_s string) string { return strings.Repeat("#",len(_s)-4) })
+	re := regexp.MustCompile(`\|\|.*?\|\|`)
+	s = re.ReplaceAllStringFunc(s, func(_s string) string { return strings.Repeat("#", len(_s)-4) })
 	return s
 }
 
