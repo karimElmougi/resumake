@@ -111,6 +111,7 @@ var latexDocument = `
 
 %==== Skills ====%
 \header{Skills}
+\vspace{1mm}
 \begin{tabular}{ l l }
     Languages:    & [[ .Languages.Display | escape | censor]] \\
     Technologies: & [[ .Technologies.Display | escape | censor]] \\
