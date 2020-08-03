@@ -7,7 +7,7 @@ import (
 )
 
 type Resume struct {
-	CensoringEnabled bool             `yaml:"censoringenabled"`
+	CensoringEnabled bool             `yaml:"censoringEnabled"`
 	Header           Header           `yaml:"header"`
 	EducationEntries []EducationEntry `yaml:"education"`
 	JobEntries       []JobEntry       `yaml:"experience"`
