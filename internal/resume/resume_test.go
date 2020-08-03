@@ -60,6 +60,7 @@ func TestResumeDeserialization(t *testing.T) {
 		},
 	}
 
+	g.Expect(r.CensoringEnabled).To(Equal(expected.CensoringEnabled))
 	g.Expect(r.Header).To(Equal(expected.Header))
 	g.Expect(r.EducationEntries).To(Equal(expected.EducationEntries))
 	g.Expect(r.JobEntries).To(Equal(expected.JobEntries))
