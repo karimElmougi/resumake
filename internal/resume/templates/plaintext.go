@@ -6,9 +6,11 @@ import (
 	"text/template"
 )
 
+var censoringEnabled bool = false
+
 // Plaintext returns the go template of the plaintext resume template
 func Plaintext() *template.Template {
-	fns := template.FuncMap{"censor": plaintextCensor}
+	fns := template.FuncMap{"censor": plaintextCensor, "setCensoringEnabled": setCensoringEnabled}
 	tmpl, err := template.New("plaintext").Funcs(fns).Parse(plaintext)
 	if err != nil {
 		panic(err)
@@ -17,16 +19,28 @@ func Plaintext() *template.Template {
 	return tmpl
 }
 
-func plaintextCensor(s string) string {
-	re := regexp.MustCompile(`\|\|.*?\|\|`)
-	s = re.ReplaceAllStringFunc(s, func(_s string) string { return strings.Repeat("#", len(_s)-4) })
-	return s
+func setCensoringEnabled(b bool) string {
+	censoringEnabled = b
+	return ""
+}
+
+func plaintextCensor(text string) string {
+	if censoringEnabled {
+		re := regexp.MustCompile(`\|\|.*?\|\|`)
+		text = re.ReplaceAllStringFunc(text, func(s string) string {
+			return strings.Repeat("#", len(s)-4)
+		})
+	} else {
+		text = strings.ReplaceAll(text, "||", "")
+	}
+	return text
 }
 
 var plaintext = `
+{{- .CensoringEnabled | setCensoringEnabled -}}
 {{- .Header.Name | censor }}
-==============================
 {{ .Header.Email | censor }}
+==============================
 
 EDUCATION
 ==============================

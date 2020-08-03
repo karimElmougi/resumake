@@ -1,14 +1,14 @@
 package templates
 
 import (
-	"text/template"
-	"strings"
 	"regexp"
+	"strings"
+	"text/template"
 )
 
 // Latex returns the go template for the Latex resume template
 func Latex() *template.Template {
-  fns := template.FuncMap{"escape": latexEscape, "toUpper": strings.ToUpper, "censor": latexCensor}
+	fns := template.FuncMap{"escape": latexEscape, "toUpper": strings.ToUpper, "censor": latexCensor}
 	tmpl, err := template.New("latex").Funcs(fns).Delims("[[", "]]").Parse(latexDocument)
 	if err != nil {
 		panic(err)
@@ -17,19 +17,19 @@ func Latex() *template.Template {
 	return tmpl
 }
 
-func latexEscape(s string) string {
-	s = strings.ReplaceAll(s, "&", "\\&")
-	s = strings.ReplaceAll(s, "%", "\\%")
-	s = strings.ReplaceAll(s, "$", "\\$")
-	s = strings.ReplaceAll(s, "#", "\\#")
-	s = strings.ReplaceAll(s, "_", "\\_")
-	return s
+func latexEscape(text string) string {
+	text = strings.ReplaceAll(text, "&", "\\&")
+	text = strings.ReplaceAll(text, "%", "\\%")
+	text = strings.ReplaceAll(text, "$", "\\$")
+	text = strings.ReplaceAll(text, "#", "\\#")
+	text = strings.ReplaceAll(text, "_", "\\_")
+	return text
 }
 
-func latexCensor(s string) string {
-  re := regexp.MustCompile(`\|\|(.*?)\|\|`)
-	s = re.ReplaceAllString(s, "\\censor{$1}")
-	return s
+func latexCensor(text string) string {
+	re := regexp.MustCompile(`\|\|(.*?)\|\|`)
+	text = re.ReplaceAllString(text, "\\censor{$1}")
+	return text
 }
 
 var latexDocument = `
@@ -65,7 +65,7 @@ var latexDocument = `
 \vspace*{-40pt}
 
 \sffamily
-[[ if not .CensoringEnabled ]]\StopCensoring[[end -]]
+[[ if not .CensoringEnabled ]]\StopCensoring[[ end ]]
 
 %==== Profile ====%
 \vspace*{-10pt}

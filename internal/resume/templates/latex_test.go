@@ -35,6 +35,7 @@ var latexResume = `
     \textheight=10in
     \pagestyle{empty}
     \raggedright
+    \usepackage{censor}
 
 %%%%%%%%%%%%%%%%%%%%%%% DEFINITIONS FOR RESUME %%%%%%%%%%%%%%%%%%%%%%%
 
@@ -54,6 +55,7 @@ var latexResume = `
 \vspace*{-40pt}
 
 \sffamily
+\StopCensoring
 
 %==== Profile ====%
 \vspace*{-10pt}
