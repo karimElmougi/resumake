@@ -1,4 +1,4 @@
-module resumake
+module github.com/karimElmougi/resumake
 
 go 1.13
 

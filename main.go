@@ -7,8 +7,8 @@ import (
 	"strings"
 	"text/template"
 
-	"resumake/internal/resume"
-	"resumake/internal/resume/templates"
+	"github.com/karimElmougi/resumake/internal/resume"
+	"github.com/karimElmougi/resumake/internal/resume/templates"
 
 	"github.com/urfave/cli/v2"
 	"gopkg.in/yaml.v2"

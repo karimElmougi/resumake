@@ -6,7 +6,7 @@ import (
 
 	. "github.com/onsi/gomega"
 
-	"resumake/internal/resume/templates"
+	"github.com/karimElmougi/resumake/internal/resume/templates"
 )
 
 func TestPlaintextTemplate(t *testing.T) {
