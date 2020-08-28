@@ -36,7 +36,7 @@ See [test_resume.yaml](test_resume.yaml) for an example resume.
 Template files are any valid Go template. While `{{` and `}}` are the default delimiters, any delimiters can be used simply by specifying them like so:
 
 ```bash
-resumake custom -delimiters [[]] template.tmpl resume.yaml
+resumake custom --delimiters [[]] template.tmpl resume.yaml
 ```
 
 The delimiters argument only needs to be a string with an even length.
