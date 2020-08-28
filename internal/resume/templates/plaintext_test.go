@@ -12,8 +12,9 @@ import (
 func TestPlaintextTemplate(t *testing.T) {
 	g := NewGomegaWithT(t)
 
-	g.Expect(func() { templates.Plaintext() }).ToNot(Panic())
-	tmpl := templates.Plaintext()
+	censor := false
+	g.Expect(func() { templates.Plaintext(&censor) }).ToNot(Panic())
+	tmpl := templates.Plaintext(&censor)
 
 	b := &strings.Builder{}
 	err := tmpl.Execute(b, testResume)

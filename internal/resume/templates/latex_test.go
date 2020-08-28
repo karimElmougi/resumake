@@ -12,8 +12,9 @@ import (
 func TestWholeLatexTemplate(t *testing.T) {
 	g := NewGomegaWithT(t)
 
-	g.Expect(func() { templates.Latex() }).ToNot(Panic())
-	tmpl := templates.Latex()
+    censor := false
+	g.Expect(func() { templates.Latex(&censor) }).ToNot(Panic())
+	tmpl := templates.Latex(&censor)
 
 	b := &strings.Builder{}
 	err := tmpl.Execute(b, testResume)
@@ -55,7 +56,6 @@ var latexResume = `
 \vspace*{-40pt}
 
 \sffamily
-\StopCensoring
 
 %==== Profile ====%
 \vspace*{-10pt}

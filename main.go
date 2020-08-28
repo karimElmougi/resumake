@@ -10,115 +10,95 @@ import (
 	"github.com/karimElmougi/resumake/internal/resume"
 	"github.com/karimElmougi/resumake/internal/resume/templates"
 
-	"github.com/urfave/cli/v2"
 	"gopkg.in/yaml.v2"
+	"github.com/spf13/cobra"
 )
 
 func main() {
-	app := cli.App{
-		Name:  "resumake",
-		Usage: "CLI tool to generate resumes",
-		Commands: []*cli.Command{
-			&cli.Command{
-				Name:      "plaintext",
-				Aliases:   []string{"txt", "text"},
-				Usage:     "Generates a .txt resume",
-				ArgsUsage: "resume.yaml",
-				Action:    makeTextResume,
-			},
-			&cli.Command{
-				Name:      "latex",
-				Usage:     "Generates a .tex file to compile into a resume using a Latex distribution",
-				ArgsUsage: "resume.yaml",
-				Action:    makeLatexResume,
-			},
-			&cli.Command{
-				Name:      "custom",
-				Usage:     "Renders a custom template",
-				ArgsUsage: "templateFile resume.yaml",
-				Flags: []cli.Flag{
-					&cli.StringFlag{
-						Name:    "delimiters",
-						Aliases: []string{"d", "delim"},
-						Value:   "{{}}",
-						Usage:   "go template delimiters",
-					},
-				},
-				Action: makeCustomResume,
-			},
+	rootCmd := &cobra.Command{
+		Use:   "resumake",
+		Short: "CLI tool to generate resumes",
+	}
+
+	censor := false
+
+	rootCmd.PersistentFlags().BoolVarP(&censor, "censor", "c", false, "Enable the censoring of text surrounded by || (ex: ||first.last||@gmail.com)")
+
+	rootCmd.AddCommand(&cobra.Command{
+		Use:   "plaintext RESUME",
+		Short: "Generates a .txt resume from the provided YAML file",
+		Aliases: []string{"txt", "text"},
+		Args: cobra.ExactArgs(1),
+		Run: func(cmd *cobra.Command, args []string) {
+			s, err := makeResume(args[0], templates.Plaintext(&censor))
+			if err != nil {
+				fmt.Println(err)
+				os.Exit(1)
+			}
+
+			fmt.Println(s)
 		},
+	})
+
+	rootCmd.AddCommand(&cobra.Command{
+		Use:   "latex RESUME",
+		Short: "Generates a .tex file to compile into a resume using a Latex distribution",
+		Args: cobra.ExactArgs(1),
+		Run: func(cmd *cobra.Command, args []string) {
+			s, err := makeResume(args[0], templates.Latex(&censor))
+			if err != nil {
+				fmt.Println(err)
+				os.Exit(1)
+			}
+
+			fmt.Println(s)
+		},
+	})
+
+	customCommand := cobra.Command{
+			Use:   "custom TEMPLATE RESUME",
+			Short: "Generates a .tex file to compile into a resume using a Latex distribution",
+			Args: cobra.ExactArgs(2),
+			Run: func(cmd *cobra.Command, args []string) {
+				templateFile := args[0]
+				content, err := ioutil.ReadFile(templateFile)
+				if err != nil {
+					fmt.Println(err)
+					os.Exit(1)
+				}
+
+				delims := args[1]
+				if len(delims)%2 != 0 {
+					fmt.Println("Delimiters mut have an even number of characters")
+					os.Exit(1)
+				}
+
+				mid := len(delims) / 2
+				openDelim := delims[:mid]
+				closeDelim := delims[mid:]
+
+				tmpl, err := template.New("template").Delims(openDelim, closeDelim).Parse(string(content))
+				if err != nil {
+					fmt.Println(err)
+					os.Exit(1)
+				}
+
+				s, err := makeResume(args[0], tmpl)
+				if err != nil {
+					fmt.Println(err)
+					os.Exit(1)
+				}
+
+				fmt.Println(s)
+			},
 	}
 
-	err := app.Run(os.Args)
-	if err != nil {
+	rootCmd.AddCommand(&customCommand)
+
+	if err := rootCmd.Execute(); err != nil {
 		fmt.Println(err)
-	}
-}
-
-func makeCustomResume(c *cli.Context) error {
-	if c.NArg() < 2 {
-		cli.ShowCommandHelpAndExit(c, "custom", 1)
-	}
-
-	templateFile := c.Args().First()
-	content, err := ioutil.ReadFile(templateFile)
-	if err != nil {
-		return err
-	}
-
-	delims := c.String("delimiters")
-	if len(delims)%2 != 0 {
-		println("Delimiters must have an even number of characters")
 		os.Exit(1)
 	}
-
-	mid := len(delims) / 2
-	openDelim := delims[:mid]
-	closeDelim := delims[mid:]
-
-	tmpl, err := template.New("template").Delims(openDelim, closeDelim).Parse(string(content))
-	if err != nil {
-		return err
-	}
-
-	s, err := makeResume(c.Args().Get(1), tmpl)
-	if err != nil {
-		return err
-	}
-
-	fmt.Println(s)
-
-	return nil
-}
-
-func makeLatexResume(c *cli.Context) error {
-	if c.NArg() < 1 {
-		cli.ShowCommandHelpAndExit(c, "latex", 1)
-	}
-
-	s, err := makeResume(c.Args().First(), templates.Latex())
-	if err != nil {
-		return err
-	}
-
-	fmt.Println(s)
-
-	return nil
-}
-
-func makeTextResume(c *cli.Context) error {
-	if c.NArg() < 1 {
-		cli.ShowCommandHelpAndExit(c, "text", 1)
-	}
-
-	s, err := makeResume(c.Args().First(), templates.Plaintext())
-	if err != nil {
-		return err
-	}
-
-	fmt.Println(s)
-
-	return nil
 }
 
 func makeResume(resumeFilename string, tmpl *template.Template) (string, error) {

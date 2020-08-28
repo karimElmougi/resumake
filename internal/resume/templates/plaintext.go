@@ -6,11 +6,20 @@ import (
 	"text/template"
 )
 
-var censoringEnabled bool = false
-
 // Plaintext returns the go template of the plaintext resume template
-func Plaintext() *template.Template {
-	fns := template.FuncMap{"censor": plaintextCensor, "setCensoringEnabled": setCensoringEnabled}
+func Plaintext(censor *bool) *template.Template {
+	fns := template.FuncMap{"censor": func(text string) string {
+		if *censor {
+			re := regexp.MustCompile(`\|\|.*?\|\|`)
+			text = re.ReplaceAllStringFunc(text, func(s string) string {
+				return strings.Repeat("#", len(s)-4)
+			})
+		} else {
+			text = strings.ReplaceAll(text, "||", "")
+		}
+
+		return text
+	}}
 	tmpl, err := template.New("plaintext").Funcs(fns).Parse(plaintext)
 	if err != nil {
 		panic(err)
@@ -19,25 +28,7 @@ func Plaintext() *template.Template {
 	return tmpl
 }
 
-func setCensoringEnabled(b bool) string {
-	censoringEnabled = b
-	return ""
-}
-
-func plaintextCensor(text string) string {
-	if censoringEnabled {
-		re := regexp.MustCompile(`\|\|.*?\|\|`)
-		text = re.ReplaceAllStringFunc(text, func(s string) string {
-			return strings.Repeat("#", len(s)-4)
-		})
-	} else {
-		text = strings.ReplaceAll(text, "||", "")
-	}
-	return text
-}
-
 var plaintext = `
-{{- .CensoringEnabled | setCensoringEnabled -}}
 {{- .Header.Name | censor }}
 {{ .Header.Email | censor }}
 ==============================

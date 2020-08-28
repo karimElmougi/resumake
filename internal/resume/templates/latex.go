@@ -7,8 +7,18 @@ import (
 )
 
 // Latex returns the go template for the Latex resume template
-func Latex() *template.Template {
-	fns := template.FuncMap{"escape": latexEscape, "toUpper": strings.ToUpper, "censor": latexCensor}
+func Latex(censor *bool) *template.Template {
+	fns := template.FuncMap{"escape": latexEscape, "toUpper": strings.ToUpper, "censor": func(text string) string {
+        if *censor {
+            re := regexp.MustCompile(`\|\|(.*?)\|\|`)
+            text = re.ReplaceAllString(text, "\\censor{$1}")
+        } else {
+            text = strings.ReplaceAll(text, "||", "")
+        }
+
+        return text
+    }}
+
 	tmpl, err := template.New("latex").Funcs(fns).Delims("[[", "]]").Parse(latexDocument)
 	if err != nil {
 		panic(err)
@@ -65,7 +75,6 @@ var latexDocument = `
 \vspace*{-40pt}
 
 \sffamily
-[[ if not .CensoringEnabled ]]\StopCensoring[[ end ]]
 
 %==== Profile ====%
 \vspace*{-10pt}
