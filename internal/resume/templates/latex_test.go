@@ -12,7 +12,7 @@ import (
 func TestWholeLatexTemplate(t *testing.T) {
 	g := NewGomegaWithT(t)
 
-    censor := false
+	censor := false
 	g.Expect(func() { templates.Latex(&censor) }).ToNot(Panic())
 	tmpl := templates.Latex(&censor)
 
@@ -58,7 +58,7 @@ var latexResume = `
 \sffamily
 
 %==== Profile ====%
-\vspace*{-10pt}
+\vspace*{-25pt}
 \begin{center}
     {\Huge JOHN SMITH}\\
     john.smith@gmail.com\\

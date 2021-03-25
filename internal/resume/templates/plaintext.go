@@ -49,11 +49,13 @@ PROFESSIONAL EXPERIENCE
 {{- end }}
 {{ if $jobEntry.Skills }}Technologies used: {{ $jobEntry.Skills.Display | censor }}{{ "\n" }}{{ end }}
 {{- end }}
+{{ if or .Languages .Technologies -}}
 SKILLS
 ==============================
-Languages: {{ .Languages.Display | censor }}
-Technologies: {{ .Technologies.Display | censor }}
-
+{{- if .Languages -}}{{ "\n" }}Languages: {{ .Languages.Display | censor}}{{- end -}}
+{{- if .Technologies -}}{{ "\n" }}Technologies: {{ .Technologies.Display | censor}}{{- end -}}
+{{ "\n\n" }}
+{{- end -}}
 PROJECTS
 ==============================
 {{- range $project := .Projects }}
