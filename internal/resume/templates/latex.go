@@ -45,7 +45,7 @@ var latexDocument = `
     \usepackage{enumitem}
     \usepackage[utf8]{inputenc}
     \usepackage[T1]{fontenc}
-    \usepackage[margin=1in]{geometry}
+    \usepackage[margin=0.75in]{geometry}
     \textheight=10in
     \pagestyle{empty}
     \raggedright
