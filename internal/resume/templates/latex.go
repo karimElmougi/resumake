@@ -84,12 +84,10 @@ var latexDocument = `
 \header{Experience}
 \vspace{1mm}
 [[ range $jobEntry := .JobEntries ]]
-\textbf{[[ $jobEntry.Employer | escape | censor]] \textbar{} [[ $jobEntry.Title | censor]]}
-\hfill [[ $jobEntry.Location | censor]]\\
-\vspace{0.75mm}
-[[ if $jobEntry.Skills ]]\textit{[[ $jobEntry.Skills.Display | escape | censor]]}[[ "\n" ]][[ end -]]
+\textbf{[[ $jobEntry.Employer | escape | censor]]}
 \hfill [[ $jobEntry.TimeSpan.Display | censor]]\\
-[[ if $jobEntry.Skills ]]\vspace{-2.5mm}[[ else ]]\vspace{-7mm}[[ end ]]
+\textbf{[[ $jobEntry.Title | censor]]} [[ if $jobEntry.Skills ]]- \textit{[[ $jobEntry.Skills.Display | escape | censor]]}[[ "\n" ]][[ end -]]
+\vspace{-1.75mm}
 \begin{itemize}[leftmargin=10pt] \itemsep -1pt
 [[- range $bullet := $jobEntry.Bullets ]]
     \item [[ $bullet | escape | censor]] 

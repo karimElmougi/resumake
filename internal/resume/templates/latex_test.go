@@ -71,34 +71,28 @@ var latexResume = `
 \header{Experience}
 \vspace{1mm}
 
-\textbf{Microsoft \textbar{} Senior Software Engineer}
-\hfill Seattle, WA\\
-\vspace{0.75mm}
-\textit{C\#, C++}
+\textbf{Microsoft}
 \hfill Jan. 2004 - Current\\
-\vspace{-2.5mm}
+\textbf{Senior Software Engineer} - \textit{C\#, C++}
+\vspace{-1.75mm}
 \begin{itemize}[leftmargin=10pt] \itemsep -1pt
     \item did a thing
     \item did another thing
 \end{itemize}
 
-\textbf{IBM \textbar{} Software Engineer}
-\hfill Seattle, WA\\
-\vspace{0.75mm}
-\textit{Java}
+\textbf{IBM}
 \hfill Jan. 2004 - Dec. 2006\\
-\vspace{-2.5mm}
+\textbf{Software Engineer} - \textit{Java}
+\vspace{-1.75mm}
 \begin{itemize}[leftmargin=10pt] \itemsep -1pt
     \item did a thing
     \item did another thing
 \end{itemize}
 
-\textbf{SAP \textbar{} Software Engineer Intern}
-\hfill Seattle, WA\\
-\vspace{0.75mm}
-\textit{ABAP}
+\textbf{SAP}
 \hfill Winter 2004\\
-\vspace{-2.5mm}
+\textbf{Software Engineer Intern} - \textit{ABAP}
+\vspace{-1.75mm}
 \begin{itemize}[leftmargin=10pt] \itemsep -1pt
     \item did a thing
     \item did another thing
