@@ -33,12 +33,6 @@ var plaintext = `
 {{ .Header.Email | censor }}
 ==============================
 
-EDUCATION
-==============================
-{{- range $eduEntry := .EducationEntries }}
-{{ $eduEntry.Degree | censor }}, {{ $eduEntry.School | censor }}, {{ $eduEntry.TimeSpan.Display | censor }}
-{{ if $eduEntry.GPA }}GPA: {{ $eduEntry.GPA | censor }}{{ "\n" }}{{ end }}
-{{- end }}
 PROFESSIONAL EXPERIENCE
 ===============================
 {{- range $jobEntry := .JobEntries }}
@@ -62,4 +56,10 @@ PROJECTS
 {{ $project.Name | censor }}
 {{ $project.Description | censor }}
 Technologies used: {{ $project.Skills.Display | censor }}{{ "\n" }}
+{{- end }}
+EDUCATION
+==============================
+{{- range $eduEntry := .EducationEntries }}
+{{ $eduEntry.Degree | censor }}, {{ $eduEntry.School | censor }}, {{ $eduEntry.TimeSpan.Display | censor }}
+{{ if $eduEntry.GPA }}GPA: {{ $eduEntry.GPA | censor }}{{ "\n" }}{{ end }}
 {{- end }}`

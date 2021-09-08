@@ -67,25 +67,6 @@ var latexResume = `
 
 
 
-%==== Education ====%
-\header{Education}
-
-\textbf{Georgia Institute of Technology}
-\hfill\\
-M.S. in Computer Science \textit{GPA: 3.9}
-\hfill Jan. 2004 - Current\\
-\vspace{2mm}
-
-\textbf{University of Philadelphia}
-\hfill\\
-B.S. in Computer Science
-\hfill Jan. 2004 - Dec. 2006\\
-\vspace{2mm}
-
-
-
-
-
 %==== Experience ====%
 \header{Experience}
 \vspace{1mm}
@@ -148,6 +129,24 @@ Compiles stuff \\
 {\textbf{Gameboy Emulator}} \textit{C++} \\
 Emulates stuff \\
 \vspace*{2mm}
+
+
+
+
+%==== Education ====%
+\header{Education}
+
+\textbf{Georgia Institute of Technology}
+\hfill\\
+M.S. in Computer Science \textit{GPA: 3.9}
+\hfill Jan. 2004 - Current\\
+\vspace{2mm}
+
+\textbf{University of Philadelphia}
+\hfill\\
+B.S. in Computer Science
+\hfill Jan. 2004 - Dec. 2006\\
+\vspace{2mm}
 
 \end{document}
 `

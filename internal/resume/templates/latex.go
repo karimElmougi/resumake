@@ -80,19 +80,6 @@ var latexDocument = `
 
 
 
-%==== Education ====%
-\header{Education}
-[[ range $eduEntry := .EducationEntries ]]
-\textbf{[[ $eduEntry.School | escape | censor]]}
-\hfill\\
-[[ $eduEntry.Degree | censor]][[- if $eduEntry.GPA ]] \textit{GPA: [[ $eduEntry.GPA | censor]]}[[ end ]]
-\hfill [[ $eduEntry.TimeSpan.Display | censor]]\\
-\vspace{2mm}
-[[ end ]]
-
-
-
-
 %==== Experience ====%
 \header{Experience}
 \vspace{1mm}
@@ -132,6 +119,18 @@ var latexDocument = `
 {\textbf{[[ $project.Name | escape | censor]]}} \textit{[[ $project.Skills.Display | escape | censor]]} \\
 [[ $project.Description | censor]] \\
 \vspace*{2mm}
+[[ end ]]
+
+
+
+%==== Education ====%
+\header{Education}
+[[ range $eduEntry := .EducationEntries ]]
+\textbf{[[ $eduEntry.School | escape | censor]]}
+\hfill\\
+[[ $eduEntry.Degree | censor]][[- if $eduEntry.GPA ]] \textit{GPA: [[ $eduEntry.GPA | censor]]}[[ end ]]
+\hfill [[ $eduEntry.TimeSpan.Display | censor]]\\
+\vspace{2mm}
 [[ end ]]
 \end{document}
 `

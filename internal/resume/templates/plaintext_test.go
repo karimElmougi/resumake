@@ -27,13 +27,6 @@ var plaintextResume = `John Smith
 john.smith@gmail.com
 ==============================
 
-EDUCATION
-==============================
-M.S. in Computer Science, Georgia Institute of Technology, Jan. 2004 - Current
-GPA: 3.9
-
-B.S. in Computer Science, University of Philadelphia, Jan. 2004 - Dec. 2006
-
 PROFESSIONAL EXPERIENCE
 ===============================
 Microsoft, Seattle, WA, Jan. 2004 - Current
@@ -68,4 +61,11 @@ Technologies used: C#, ANTLR, LLVM
 Gameboy Emulator
 Emulates stuff
 Technologies used: C++
+
+EDUCATION
+==============================
+M.S. in Computer Science, Georgia Institute of Technology, Jan. 2004 - Current
+GPA: 3.9
+
+B.S. in Computer Science, University of Philadelphia, Jan. 2004 - Dec. 2006
 `
