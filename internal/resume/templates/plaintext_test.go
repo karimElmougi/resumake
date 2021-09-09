@@ -25,6 +25,8 @@ func TestPlaintextTemplate(t *testing.T) {
 
 var plaintextResume = `John Smith
 john.smith@gmail.com
+https://github.com/josm
+https://linkedin.com/in/johnsmith
 ==============================
 
 PROFESSIONAL EXPERIENCE

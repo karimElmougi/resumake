@@ -1,6 +1,8 @@
 header:
-  name: '||Karim Elmougi||'
-  email: '||karim.elmougi||@gmail.com'
+  name: '||John Smith||'
+  email: '||john.smith||@gmail.com'
+  linkedin: '||johnsmith||'
+  github: '||josm||'
   
 education:
   - school: University of Sherbrooke

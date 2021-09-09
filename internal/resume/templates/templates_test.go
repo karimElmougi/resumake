@@ -12,8 +12,10 @@ var testEndTime = time.Date(2006, 12, 31, 0, 0, 0, 0, time.UTC)
 
 var testResume = resume.Resume{
 	Header: resume.Header{
-		Name:  "John Smith",
-		Email: "john.smith@gmail.com",
+		Name:             "John Smith",
+		Email:            "john.smith@gmail.com",
+		GitHubUsername:   "josm",
+		LinkedInUsername: "johnsmith",
 	},
 	EducationEntries: []resume.EducationEntry{
 		{

@@ -31,6 +31,8 @@ func Plaintext(censor *bool) *template.Template {
 var plaintext = `
 {{- .Header.Name | censor }}
 {{ .Header.Email | censor }}
+https://github.com/{{ .Header.GitHubUsername | censor }}
+https://linkedin.com/in/{{ .Header.LinkedInUsername | censor }}
 ==============================
 
 PROFESSIONAL EXPERIENCE

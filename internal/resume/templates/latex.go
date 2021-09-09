@@ -8,16 +8,12 @@ import (
 
 // Latex returns the go template for the Latex resume template
 func Latex(censor *bool) *template.Template {
-	fns := template.FuncMap{"escape": latexEscape, "toUpper": strings.ToUpper, "censor": func(text string) string {
-		if *censor {
-			re := regexp.MustCompile(`\|\|(.*?)\|\|`)
-			text = re.ReplaceAllString(text, "\\censor{$1}")
-		} else {
-			text = strings.ReplaceAll(text, "||", "")
-		}
-
-		return text
-	}}
+	fns := template.FuncMap{
+		"escape":     latexEscape,
+		"toUpper":    strings.ToUpper,
+		"censor":     func(text string) string { return censorText(censor, text, "\\censor{$1}") },
+		"censorText": func(text string) string { return censorText(censor, text, "asdf") },
+	}
 
 	tmpl, err := template.New("latex").Funcs(fns).Delims("[[", "]]").Parse(latexDocument)
 	if err != nil {
@@ -25,6 +21,17 @@ func Latex(censor *bool) *template.Template {
 	}
 
 	return tmpl
+}
+
+func censorText(censor *bool, text string, replacement string) string {
+	if *censor {
+		re := regexp.MustCompile(`\|\|(.*?)\|\|`)
+		text = re.ReplaceAllString(text, replacement)
+	} else {
+		text = strings.ReplaceAll(text, "||", "")
+	}
+
+	return text
 }
 
 func latexEscape(text string) string {
@@ -50,6 +57,8 @@ var latexDocument = `
     \pagestyle{empty}
     \raggedright
     \usepackage{censor}
+    \usepackage{fontawesome}
+    \usepackage{hyperref}
 
 %%%%%%%%%%%%%%%%%%%%%%% DEFINITIONS FOR RESUME %%%%%%%%%%%%%%%%%%%%%%%
 
@@ -74,7 +83,10 @@ var latexDocument = `
 \vspace*{-25pt}
 \begin{center}
     {\Huge [[ .Header.Name | toUpper | censor ]]}\\
-    [[ .Header.Email | censor]]\\
+    \vspace{2.5pt}
+    \faEnvelope \ [[ .Header.Email | censor]]
+    $|$ \faLinkedinSquare \ \href{https://linkedin.com/in/[[ .Header.LinkedInUsername | censorText ]]}{linkedin.com/in/[[ .Header.LinkedInUsername | censor ]]}
+    $|$ \faGithub \ \href{https://github.com/[[ .Header.GitHubUsername | censorText ]]}{github.com/[[ .Header.GitHubUsername | censor ]]}\\
 \end{center}
 
 

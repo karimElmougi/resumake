@@ -25,7 +25,7 @@ func main() {
 	output := "-"
 
 	rootCmd.PersistentFlags().BoolVarP(&censor, "censor", "c", false, "Enable the censoring of text surrounded by || (ex: ||first.last||@gmail.com)")
-	rootCmd.PersistentFlags().StringVarP(&output, "ouput", "o", "-", "Output file (`-` for stdout, `devnull` to discard)")
+	rootCmd.PersistentFlags().StringVarP(&output, "ouput", "o", "-", "Output file for the rendered template (`-` for stdout, `devnull` to discard)")
 
 	rootCmd.AddCommand(&cobra.Command{
 		Use:     "plaintext RESUME",
@@ -65,8 +65,19 @@ func main() {
 				os.Exit(1)
 			}
 
-			texFile := ""
+			if output == "-" {
+				fmt.Println(s)
+			} else if output == "devnull" {
+			} else {
+				err := ioutil.WriteFile(output, []byte(s), 0644)
+				if err != nil {
+					fmt.Println(err)
+					os.Exit(1)
+				}
+			}
+
 			if compile {
+				texFile := ""
 				if output == "-" || output == "devnull" {
 					tmpfile, err := ioutil.TempFile("", "resume.tex")
 					if err != nil {
@@ -86,26 +97,14 @@ func main() {
 				} else {
 					texFile = output
 				}
-			}
 
-			if output != "-" && output != "devnull" {
-				err := ioutil.WriteFile(output, []byte(s), 0644)
-				if err != nil {
-					fmt.Println(err)
-					os.Exit(1)
+				if compile {
+					err = exec.Command("pdflatex", texFile).Run()
+					if err != nil {
+						fmt.Println("unable to compile latex to PDF:", err)
+						os.Exit(1)
+					}
 				}
-			}
-
-			if compile {
-				err = exec.Command("pdflatex", texFile).Run()
-				if err != nil {
-					fmt.Println("unable to compile latex to PDF:", err)
-					os.Exit(1)
-				}
-			}
-
-			if output == "-" {
-				fmt.Println(s)
 			}
 		},
 	}

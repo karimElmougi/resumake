@@ -16,8 +16,10 @@ type Resume struct {
 }
 
 type Header struct {
-	Name  string `yaml:"name"`
-	Email string `yaml:"email"`
+	Name             string `yaml:"name"`
+	Email            string `yaml:"email"`
+	LinkedInUsername string `yaml:"linkedin"`
+	GitHubUsername   string `yaml:"github"`
 }
 
 type EducationEntry struct {

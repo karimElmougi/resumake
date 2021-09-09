@@ -22,8 +22,10 @@ func TestResumeDeserialization(t *testing.T) {
 	expectedTime := time.Date(2004, 01, 1, 0, 0, 0, 0, time.UTC)
 	expected := resume.Resume{
 		Header: resume.Header{
-			Name:  "John Smith",
-			Email: "john.smith@gmail.com",
+			Name:             "John Smith",
+			Email:            "john.smith@gmail.com",
+			GitHubUsername:   "josm",
+			LinkedInUsername: "johnsmith",
 		},
 		EducationEntries: []resume.EducationEntry{{
 			School: "University of Philadelphia",
@@ -71,6 +73,8 @@ var resumeYAML = []byte(`
 header:
   name: John Smith
   email: john.smith@gmail.com
+  github: josm
+  linkedin: johnsmith
   
 education:
   - school: University of Philadelphia

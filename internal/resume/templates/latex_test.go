@@ -37,6 +37,8 @@ var latexResume = `
     \pagestyle{empty}
     \raggedright
     \usepackage{censor}
+    \usepackage{fontawesome}
+    \usepackage{hyperref}
 
 %%%%%%%%%%%%%%%%%%%%%%% DEFINITIONS FOR RESUME %%%%%%%%%%%%%%%%%%%%%%%
 
@@ -61,7 +63,10 @@ var latexResume = `
 \vspace*{-25pt}
 \begin{center}
     {\Huge JOHN SMITH}\\
-    john.smith@gmail.com\\
+    \vspace{2.5pt}
+    \faEnvelope \ john.smith@gmail.com
+    $|$ \faLinkedinSquare \ \href{https://linkedin.com/in/johnsmith}{linkedin.com/in/johnsmith}
+    $|$ \faGithub \ \href{https://github.com/josm}{github.com/josm}\\
 \end{center}
 
 
