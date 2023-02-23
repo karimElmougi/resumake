@@ -1,0 +1,45 @@
+{{ censor header.name }}
+{{ censor header.email }}
+https://github.com/{{ censor header.github }}
+https://linkedin.com/in/{{ censor header.linkedin }}
+==============================
+
+PROFESSIONAL EXPERIENCE
+===============================
+{{#each experience }}
+{{ censor this.employer }}, {{ censor this.location }}, {{ this.timespan }}
+{{ this.title }}
+{{#each this.bullets}}
+* {{ this }}
+{{/each}}
+{{#if this.skills}}
+Technologies used: {{ list this.skills }}
+{{/if}}
+
+{{/each}}
+SKILLS
+==============================
+{{#if has_skill_section }}
+{{#if languages }}
+Languages: {{ list languages }}
+{{/if}}
+{{#if technologies }}
+Technologies: {{ list technologies }}
+{{/if}}
+{{/if}}
+
+PROJECTS
+==============================
+{{#each projects }}
+{{ this.name }}
+{{ this.description }}
+Technologies used: {{ list this.skills }}
+
+{{/each}}
+EDUCATION
+==============================
+{{#each education }}
+{{ censor this.degree }}, {{ censor this.school }}, {{ this.timespan }}
+{{#if this.gpa }}GPA: {{ this.gpa }}{{/if}}
+
+{{/each }}

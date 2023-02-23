@@ -1,6 +1,6 @@
 pub mod templates;
 
-use chrono::{NaiveDate, Datelike};
+use chrono::{Datelike, NaiveDate};
 use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
@@ -25,7 +25,10 @@ pub struct Header {
 pub struct EducationEntry {
     pub school: String,
     pub degree: String,
-    pub gpa: String,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub gpa: Option<String>,
+
     pub timespan: Timespan,
 }
 
@@ -121,8 +124,7 @@ impl Serialize for Timespan {
 fn format(date: &NaiveDate) -> String {
     if date.month() == 5 {
         date.format("%b %Y").to_string()
-    }
-    else {
+    } else {
         date.format("%b. %Y").to_string()
     }
 }
@@ -149,63 +151,106 @@ mod tests {
             start: NaiveDate::from_ymd_opt(2001, 04, 01).unwrap(),
             end: NaiveDate::from_ymd_opt(2001, 12, 01).unwrap(),
         };
-    
+
         let s = serde_yaml::to_string(&span).unwrap();
-    
+
         assert_eq!(s, "Apr. 2001 - Dec. 2001\n")
     }
-    
+
     #[test]
     fn unbounded_serialize_test() {
         let span = Timespan::Unbounded {
             start: NaiveDate::from_ymd_opt(2001, 05, 01).unwrap(),
         };
-    
+
         let s = serde_yaml::to_string(&span).unwrap();
-    
+
         assert_eq!(s, "May 2001 - Current\n")
     }
-    
+
     #[test]
     fn test() {
-        let expected = Resume {
+        let result: Resume = serde_yaml::from_str(INPUT).unwrap();
+
+        assert_eq!(result, test_resume());
+    }
+
+    pub fn test_resume() -> Resume {
+        Resume {
             header: Header {
                 name: "John Smith".to_string(),
                 email: "john.smith@gmail.com".to_string(),
                 github: "josm".to_string(),
                 linkedin: Some("johnsmith".to_string()),
             },
-            education: vec![EducationEntry {
-                school: "University of Philadelphia".to_string(),
-                degree: "B.S. in Computer Science".to_string(),
-                gpa: "3.45".to_string(),
-                timespan: Timespan::Bounded {
-                    start: NaiveDate::from_ymd_opt(2004, 01, 01).unwrap(),
-                    end: NaiveDate::from_ymd_opt(2004, 01, 01).unwrap(),
+            education: vec![
+                EducationEntry {
+                    school: "Georgia Institute of Technology".to_string(),
+                    degree: "M.S. in Computer Science".to_string(),
+                    gpa: Some("3.9".to_string()),
+                    timespan: Timespan::Unbounded {
+                        start: NaiveDate::from_ymd_opt(2007, 01, 01).unwrap(),
+                    },
                 },
-            }],
-            experience: vec![Job {
-                title: "Senior Software Engineer".to_string(),
-                employer: "Microsoft".to_string(),
-                location: "Seattle, WA".to_string(),
-                timespan: Timespan::Unbounded {
-                    start: NaiveDate::from_ymd_opt(2004, 01, 01).unwrap(),
+                EducationEntry {
+                    school: "University of Philadelphia".to_string(),
+                    degree: "B.S. in Computer Science".to_string(),
+                    gpa: None,
+                    timespan: Timespan::Bounded {
+                        start: NaiveDate::from_ymd_opt(2004, 01, 01).unwrap(),
+                        end: NaiveDate::from_ymd_opt(2006, 12, 01).unwrap(),
+                    },
                 },
-                skills: vec!["C#".to_string(), "C++".to_string()],
-                bullets: vec!["did a thing".to_string(), "did another thing".to_string()],
-            }],
+            ],
+            experience: vec![
+                Job {
+                    title: "Senior Software Engineer".to_string(),
+                    employer: "Microsoft".to_string(),
+                    location: "Seattle, WA".to_string(),
+                    timespan: Timespan::Unbounded {
+                        start: NaiveDate::from_ymd_opt(2009, 01, 01).unwrap(),
+                    },
+                    skills: vec!["C#".to_string(), "C++".to_string()],
+                    bullets: vec!["did a thing".to_string(), "did another thing".to_string()],
+                },
+                Job {
+                    title: "Software Engineer".to_string(),
+                    employer: "IBM".to_string(),
+                    location: "Seattle, WA".to_string(),
+                    timespan: Timespan::Bounded {
+                        start: NaiveDate::from_ymd_opt(2007, 01, 01).unwrap(),
+                        end: NaiveDate::from_ymd_opt(2008, 12, 01).unwrap(),
+                    },
+                    skills: vec!["Java".to_string()],
+                    bullets: vec!["did a thing".to_string(), "did another thing".to_string()],
+                },
+                Job {
+                    title: "Software Engineer Intern".to_string(),
+                    employer: "SAP".to_string(),
+                    location: "Seattle, WA".to_string(),
+                    timespan: Timespan::Season {
+                        year: 2005,
+                        season: Season::Summer,
+                    },
+                    skills: vec!["ABAP".to_string()],
+                    bullets: vec!["did a thing".to_string(), "did another thing".to_string()],
+                },
+            ],
             languages: vec!["C++".to_string(), "Java".to_string(), "C#".to_string()],
             technologies: vec!["git".to_string(), "Docker".to_string()],
-            projects: vec![Project {
-                name: "Compiler".to_string(),
-                skills: vec!["C#".to_string(), "ANTLR".to_string(), "LLVM".to_string()],
-                description: "Compiles stuff".to_string(),
-            }],
-        };
-
-        let result: Resume = serde_yaml::from_str(INPUT).unwrap();
-
-        assert_eq!(result, expected);
+            projects: vec![
+                Project {
+                    name: "Compiler".to_string(),
+                    skills: vec!["C#".to_string(), "ANTLR".to_string(), "LLVM".to_string()],
+                    description: "Compiles stuff".to_string(),
+                },
+                Project {
+                    name: "Gameboy Emulator".to_string(),
+                    skills: vec!["C++".to_string()],
+                    description: "Emulates stuff".to_string(),
+                },
+            ],
+        }
     }
 
     const INPUT: &str = "
@@ -216,22 +261,48 @@ header:
   linkedin: johnsmith
   
 education:
+  - school: Georgia Institute of Technology
+    degree: M.S. in Computer Science
+    gpa: 3.9
+    timespan:
+      start: 01/2007
   - school: University of Philadelphia
     degree: B.S. in Computer Science
-    gpa: 3.45
     timespan:
       start: 01/2004
-      end: 01/2004
+      end: 12/2006
       
 experience:
   - title: Senior Software Engineer
     employer: Microsoft
     location: Seattle, WA
     timespan: 
-      start: 01/2004
+      start: 01/2009
     skills:
       - C#
       - C++
+    bullets:
+      - did a thing
+      - did another thing
+  - title: Software Engineer
+    employer: IBM
+    location: Seattle, WA
+    timespan: 
+      start: 01/2007
+      end: 12/2008
+    skills:
+      - Java
+    bullets:
+      - did a thing
+      - did another thing
+  - title: Software Engineer Intern
+    employer: SAP
+    location: Seattle, WA
+    timespan: 
+        season: Summer
+        year: 2005
+    skills:
+      - ABAP
     bullets:
       - did a thing
       - did another thing
@@ -251,5 +322,9 @@ projects:
       - C#
       - ANTLR
       - LLVM
-    description: Compiles stuff";
+    description: Compiles stuff
+  - name: Gameboy Emulator
+    description: Emulates stuff
+    skills:
+      - C++";
 }
