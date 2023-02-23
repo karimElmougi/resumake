@@ -1,0 +1,103 @@
+\documentclass[letterpaper]{article}
+    \usepackage{fullpage}
+    \usepackage{amsmath}
+    \usepackage{amssymb}
+    \usepackage{textcomp}
+    \usepackage{enumitem}
+    \usepackage[utf8]{inputenc}
+    \usepackage[T1]{fontenc}
+    \usepackage[margin=0.75in]{geometry}
+    \textheight=10in
+    \pagestyle{empty}
+    \raggedright
+    \usepackage{censor}
+    \usepackage{fontawesome}
+    \usepackage{hyperref}
+
+%%%%%%%%%%%%%%%%%%%%%%% DEFINITIONS FOR RESUME %%%%%%%%%%%%%%%%%%%%%%%
+
+\newcommand{\lineunder} {
+    \vspace*{-8pt} \\
+    \hspace*{-18pt} \hrulefill \\
+}
+
+\newcommand{\header} [1] {
+    {\hspace*{-18pt}\vspace*{6pt} {#1}}
+    \vspace*{-6pt} \lineunder
+}
+
+%%%%%%%%%%%%%%%%%%%%%%% END RESUME DEFINITIONS %%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{document}
+\vspace*{-40pt}
+
+\sffamily
+
+%==== Profile ====%
+\vspace*{-25pt}
+\begin{center}
+    {\Huge {{ censor (toUpper header.name) }}}\\
+    \vspace{2.5pt}
+    \faEnvelope \ {{ censor header.email }}
+    $|$ \faLinkedinSquare \ \href{https://linkedin.com/in/{{ censorText header.linkedin }}}{linkedin.com/in/{{ censor header.linkedin }}}
+    $|$ \faGithub \ \href{https://github.com/{{ censorText header.github }}}{github.com/{{ censor header.github }}}\\
+\end{center}
+
+
+
+
+%==== Experience ====%
+\header{Experience}
+\vspace{1mm}
+{{#each experience }}
+\textbf{{ wrap (censor this.employer) }}
+\hfill {{ this.timespan }}\\
+\textbf{{ wrap this.title }} {{#if this.skills }}- \textit{{ wrap(list this.skills) }}{{/if}}
+\vspace{-1.75mm}
+\begin{itemize}[leftmargin=10pt] \itemsep -1pt
+{{#each this.bullets }}
+    \item {{ censor this }}
+{{/each}}
+\end{itemize}
+
+{{/each}}
+
+
+
+%==== Skills ====%
+{{#if has_skill_section }}
+\header{Skills}
+\vspace{1mm}
+\begin{tabular}{ l l }
+{{#if languages }}    Languages:    & {{ list languages }} \\ {{/if}}
+{{#if technologies }}    Technologies: & {{ list technologies }} \\ {{/if}}
+\end{tabular}
+\vspace{2mm}
+{{/if}}
+
+
+
+
+%==== Projects ====%
+\header{Projects}
+\vspace{1mm}
+{{#each projects }}
+\textbf{{ wrap(censor this.name) }} \textit{{ wrap(list this.skills) }} \\
+{{ censor this.description }} \\
+\vspace*{2mm}
+
+{{/each}}
+
+
+
+%==== Education ====%
+\header{Education}
+{{#each education }}
+\textbf{{ wrap(censor this.school) }}
+\hfill\\
+{{ censor this.degree }}{{#if this.gpa }} \textit{GPA: {{ this.gpa }}}{{/if}}
+\hfill {{ this.timespan }}\\
+\vspace{2mm}
+
+{{/each}}
+\end{document}

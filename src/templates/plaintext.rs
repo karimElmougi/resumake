@@ -1,10 +1,9 @@
+use super::{list, Context};
 use crate::Resume;
 
 use std::error::Error;
 
 use handlebars::{Handlebars, JsonRender};
-use regex::Regex;
-use serde::Serialize;
 
 const TEMPLATE: &str = include_str!("template.txt");
 
@@ -17,15 +16,6 @@ pub fn render(resume: Resume) -> Result<String, Box<dyn Error>> {
 
     handlebars.register_helper("censor", Box::new(censor));
     handlebars.register_helper("list", Box::new(list));
-
-    #[derive(Serialize)]
-    struct Context {
-        is_censored: bool,
-        has_skill_section: bool,
-
-        #[serde(flatten)]
-        resume: Resume,
-    }
 
     let ctx = handlebars::Context::wraps(Context {
         is_censored: false,
@@ -52,41 +42,8 @@ fn censor(
 
     let param = param.value().render();
 
-    let is_censored = c.data().get("is_censored").unwrap().as_bool().unwrap();
-    if is_censored {
-        let re = Regex::new(r"\|\|.*?\|\|").unwrap();
-        write!(out, "{}", re.replace_all(&param, "######"))?;
-    } else {
-        write!(out, "{}", param.replace("||", ""))?;
-    }
-
-    Ok(())
-}
-
-fn list(
-    h: &handlebars::Helper,
-    _: &Handlebars,
-    _: &handlebars::Context,
-    _: &mut handlebars::RenderContext,
-    out: &mut dyn handlebars::Output,
-) -> Result<(), handlebars::RenderError> {
-    let param = h.param(0).ok_or(handlebars::RenderError::new(
-        "Param 0 is required for list helper.",
-    ))?;
-
-    let param = param
-        .value()
-        .as_array()
-        .ok_or(handlebars::RenderError::new(
-            "Param 0 to list helper must be array.",
-        ))?;
-
-    let output = param
-        .iter()
-        .map(JsonRender::render)
-        .collect::<Vec<_>>()
-        .join(", ");
-    write!(out, "{output}")?;
+    let output = super::censor(&param, c, "######");
+    write!(out, "{}", output)?;
 
     Ok(())
 }
@@ -95,6 +52,7 @@ fn list(
 mod tests {
     use super::*;
     use pretty_assertions::assert_eq;
+    use serde::Serialize;
 
     #[test]
     fn censor_test() {
