@@ -1,7 +1,9 @@
-use chrono::NaiveDate;
-use serde::Deserialize;
+pub mod templates;
 
-#[derive(Debug, Clone, PartialEq, Eq, Deserialize)]
+use chrono::{NaiveDate, Datelike};
+use serde::{Deserialize, Serialize};
+
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub struct Resume {
     pub header: Header,
     pub education: Vec<EducationEntry>,
@@ -11,7 +13,7 @@ pub struct Resume {
     pub projects: Vec<Project>,
 }
 
-#[derive(Debug, Clone, PartialEq, Eq, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub struct Header {
     pub name: String,
     pub email: String,
@@ -19,7 +21,7 @@ pub struct Header {
     pub linkedin: Option<String>,
 }
 
-#[derive(Debug, Clone, PartialEq, Eq, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub struct EducationEntry {
     pub school: String,
     pub degree: String,
@@ -27,7 +29,7 @@ pub struct EducationEntry {
     pub timespan: Timespan,
 }
 
-#[derive(Debug, Clone, PartialEq, Eq, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub struct Job {
     pub title: String,
     pub employer: String,
@@ -37,7 +39,7 @@ pub struct Job {
     pub timespan: Timespan,
 }
 
-#[derive(Debug, Clone, PartialEq, Eq, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub struct Project {
     pub name: String,
     pub description: String,
@@ -47,7 +49,10 @@ pub struct Project {
 #[derive(Debug, Clone, PartialEq, Eq, Deserialize)]
 #[serde(untagged)]
 pub enum Timespan {
-    Season(Season, Year),
+    Season {
+        season: Season,
+        year: u32,
+    },
 
     Bounded {
         #[serde(deserialize_with = "deserialize_date")]
@@ -63,14 +68,18 @@ pub enum Timespan {
     },
 }
 
-type Year = u32;
-
-#[derive(Debug, Clone, PartialEq, Eq, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub enum Season {
     Winter,
     Spring,
     Summer,
     Fall,
+}
+
+impl std::fmt::Display for Season {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        std::fmt::Debug::fmt(self, f)
+    }
 }
 
 fn deserialize_date<'de, D>(deserializer: D) -> Result<NaiveDate, D::Error>
@@ -92,11 +101,71 @@ where
         })
 }
 
+impl Serialize for Timespan {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        let output = match self {
+            Timespan::Season { season, year } => format!("{season} {year}"),
+            Timespan::Bounded { start, end } => {
+                format!("{} - {}", format(start), format(end))
+            }
+            Timespan::Unbounded { start } => format!("{} - Current", format(start)),
+        };
+
+        serializer.serialize_str(&output)
+    }
+}
+
+fn format(date: &NaiveDate) -> String {
+    if date.month() == 5 {
+        date.format("%b %Y").to_string()
+    }
+    else {
+        date.format("%b. %Y").to_string()
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
     use pretty_assertions::assert_eq;
 
+    #[test]
+    fn season_serialize_test() {
+        let span = Timespan::Season {
+            season: Season::Winter,
+            year: 2001,
+        };
+        let s = serde_yaml::to_string(&span).unwrap();
+
+        assert_eq!(s, "Winter 2001\n")
+    }
+
+    #[test]
+    fn bounded_serialize_test() {
+        let span = Timespan::Bounded {
+            start: NaiveDate::from_ymd_opt(2001, 04, 01).unwrap(),
+            end: NaiveDate::from_ymd_opt(2001, 12, 01).unwrap(),
+        };
+    
+        let s = serde_yaml::to_string(&span).unwrap();
+    
+        assert_eq!(s, "Apr. 2001 - Dec. 2001\n")
+    }
+    
+    #[test]
+    fn unbounded_serialize_test() {
+        let span = Timespan::Unbounded {
+            start: NaiveDate::from_ymd_opt(2001, 05, 01).unwrap(),
+        };
+    
+        let s = serde_yaml::to_string(&span).unwrap();
+    
+        assert_eq!(s, "May 2001 - Current\n")
+    }
+    
     #[test]
     fn test() {
         let expected = Resume {
